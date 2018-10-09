@@ -109,6 +109,7 @@ if board.get("build.cpu") == "cortex-m4":
     env.Append(
         CCFLAGS=[
             "-mfloat-abi=softfp",
+#            "-mfloat-abi=hard",
             "-mfpu=fpv4-sp-d16"
         ]
     )
@@ -121,7 +122,9 @@ env.Append(
 # Process softdevice options
 softdevice_ver = None
 cpp_defines = env.Flatten(env.get("CPPDEFINES", []))
-if "NRF52_S132" in cpp_defines:
+if "NRF52_S140" in cpp_defines:
+    softdevice_ver = "s140"
+elif "NRF52_S132" in cpp_defines:
     softdevice_ver = "s132"
 elif "NRF51_S130" in cpp_defines:
     softdevice_ver = "s130"
@@ -162,6 +165,7 @@ if softdevice_ver:
 
     if ldscript_path:
         env.Replace(LDSCRIPT_PATH=ldscript_path)
+        print("Linker Script: %s" % ldscript_path)
     else:
         print("Warning! Cannot find an appropriate linker script for the "
               "required softdevice!")
